@@ -9,6 +9,7 @@ module Qmine
     include_class 'data.Dataset'
     include_class 'java.io.FileWriter'
     include_class 'java.io.BufferedWriter'
+    include_class 'main.Analyze'
     
     def initialize( ext_options = {} )
       options         = default_options.merge( ext_options.delete_if{ |k,v| v.nil? })
@@ -18,7 +19,7 @@ module Qmine
       dataset         = Dataset.new( options[:inputfile], options[:debuglevel], debug_out)
       a               = Analysis.new(dataset,Analysis::AnalysisStyle.allPairs)
       
-      result          = a.getSortedResults(
+      results          = a.getSortedResults(
                             BriefResult,
                             options[:inputfile],
                             options[:required_common_vals_percent],
@@ -29,6 +30,8 @@ module Qmine
                             options[:debuglevel],
                             debug_out
                           )
+                          
+      Analyze.printResults(results, options[:inputfile], '1')
     end
     
     def buh
@@ -37,7 +40,7 @@ module Qmine
     def default_options
       {
         :debuglevel                       => 0,
-        :inputfile                        => 'spec/fixtures/MLB2008-numeric.csv',
+        :inputfile                        => 'spec/fixtures/WHO.csv',
         :gc_wait                          => 2147483647,
         :num_clumps_factor                => 15.0,
         :required_common_vals_percent     => 0.0,
